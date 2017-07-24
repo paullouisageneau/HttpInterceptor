@@ -8,9 +8,11 @@ Moreover, the current implementation prevents HTTP pipelining, which might reduc
 
 Like it is described in the answer to the previous question, the app is not compatible with streams featuring absolute URLs, in that case, the requests would not be intercepted properly.
 
-Also, the current app does not have any fallback mode (for instance redirecting the player to a non-intercepted stream), so issues with HTTP requests forwarding might lead to an unreacheable video. There are no analytics or error reporting mechanisms, so if the application was deployed in production, nothing would be reported in case of problems.
+Also, the current app does not have any fallback mode (for instance redirecting the player to a non-intercepted stream), so any issue with the HTTP forwarding process might lead to an unreacheable video. There are no analytics or error reporting mechanisms, so if the application was deployed in production, nothing would be reported in case of problems.
 
 # Bonus question
+
+The app should select a free TCP port if the default one is busy.
 
 To be compatible with all streams, the playlist files could be parsed and interpreted to replace absolute URLs. The HTTP forwarder could be extended to forward to multiple hosts, for instance using the first directory of the path as a hint.
 
