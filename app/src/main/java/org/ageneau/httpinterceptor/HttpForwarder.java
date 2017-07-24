@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
@@ -18,6 +19,8 @@ import java.util.Map;
 
 /**
  * HTTP forwarder implementation
+ * This is a simple HTTP reverse proxy implementation, it listens for requests and forwards them
+ * to a predefined HTTP or HTTPS server.
  */
 class HttpForwarder implements Runnable {
 
@@ -30,7 +33,9 @@ class HttpForwarder implements Runnable {
     private ServerSocket mServerSocket;
 
     /**
-     * Create server for specified port, requests will be forwarded to specified target URL
+     * Create forwarder for given port and target URL
+     * @param port TCP port to listen on, e.g. 8080
+     * @param targetUrl Base URL to forward requests to, e.g. "https://mydomain.com"
      */
     HttpForwarder(int port, String targetUrl) {
         mPort = port;
@@ -38,7 +43,7 @@ class HttpForwarder implements Runnable {
     }
 
     /**
-     * Start the server
+     * Start the forwarder
      */
     void start() {
         try {
@@ -56,7 +61,7 @@ class HttpForwarder implements Runnable {
     }
 
     /**
-     * Stop the server
+     * Stop the forwarder
      */
     void stop() {
         try {
@@ -70,7 +75,7 @@ class HttpForwarder implements Runnable {
     }
 
     /**
-     * Server main loop
+     * Forwarder main loop
      */
     @Override
     public void run() {
@@ -99,6 +104,7 @@ class HttpForwarder implements Runnable {
 
     /**
      * Receive an HTTP request, forward the request to target and forward back the response
+     * @param socket The client socket
      */
     private void handle(Socket socket) {
         BufferedReader reader = null;
@@ -214,6 +220,9 @@ class HttpForwarder implements Runnable {
 
     /**
      * Send an HTTP response on stream
+     * @param output The stream where the response is to be written
+     * @param response The response code and message, e.g. "404 Not found"
+     * @param otherHeaders If true, headers are not finished by sending an empty line
      */
     private void sendResponse(PrintStream output, String response, boolean otherHeaders) {
         output.print("HTTP/1.1 " + response + "\r\n");
