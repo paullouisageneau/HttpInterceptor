@@ -180,15 +180,14 @@ public class HttpForwarder implements Runnable {
 
             // Forward content
             try {
-                InputStream in;
+                BufferedInputStream in;
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    in = conn.getInputStream();
+                    in = new BufferedInputStream(conn.getInputStream());
                 }
                 else {
-                    in = conn.getErrorStream();
+                    in = new BufferedInputStream(conn.getErrorStream());
                 }
 
-                in = new BufferedInputStream(conn.getInputStream());
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int size;
                 while ((size = in.read(buffer)) != -1) {
