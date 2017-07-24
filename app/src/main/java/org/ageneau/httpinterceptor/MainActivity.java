@@ -1,10 +1,12 @@
 package org.ageneau.httpinterceptor;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private static final String TARGET_URL = "https://wowza-cloudfront.streamroot.io/liveorigin/stream4/playlist.m3u8";
-    private static final String PLAYER = "org.videolan.vlc";
+    private static final String PLAYER = "org.videolan.vlc";    // VLC media player
     private static final int PLAYER_REQUEST = 42;
     private static final int LOCAL_PORT = 8888;
 
@@ -70,7 +72,13 @@ public class MainActivity extends AppCompatActivity {
         Intent playerIntent = new Intent(Intent.ACTION_VIEW);
         playerIntent.setData(Uri.parse(localUrl));
         playerIntent.setPackage(PLAYER);
-        startActivityForResult(playerIntent, PLAYER_REQUEST);
+
+        try {
+            startActivityForResult(playerIntent, PLAYER_REQUEST);
+        } catch (ActivityNotFoundException e) {
+            Toast toast = Toast.makeText(getBaseContext(), "Specified player not found", Toast.LENGTH_LONG);
+            toast.show();
+        }
     }
 
     @Override
