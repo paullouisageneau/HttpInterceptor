@@ -83,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLAYER_REQUEST) {
-            // Exit when player has finished
-            finish();
+        if(requestCode == PLAYER_REQUEST) {
+            // New VLC versions return a result before closing so we shouldn't finish
+            //finish();
         }
     }
 }
