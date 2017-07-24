@@ -147,13 +147,13 @@ class HttpForwarder implements Runnable {
             }
 
             // We need to forward the request to target with the path
-            String targetUrl = mTargetUrl + path;
+            String fullUrl = mTargetUrl + path;
 
             // Log the original request, as required
-            Log.i(TAG, method + " " + targetUrl);
+            Log.i(TAG, method + " " + fullUrl);
 
             // Forge the corresponding request
-            URL url = new URL(targetUrl);
+            URL url = new URL(fullUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             // Populate request
@@ -172,7 +172,7 @@ class HttpForwarder implements Runnable {
             conn.connect();
 
             // Forward response
-            String response = conn.getResponseCode() + " " + conn.getResponseMessage();
+            String response =  String.valueOf(conn.getResponseCode()) + " " + conn.getResponseMessage();
             sendResponse(output, response, true);
 
             // Forward response headers
