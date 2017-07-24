@@ -5,13 +5,11 @@ import android.util.Log;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +19,7 @@ import java.util.Map;
 /**
  * HTTP forwarder implementation
  */
-public class HttpForwarder implements Runnable {
+class HttpForwarder implements Runnable {
 
     private static final String TAG = "HttpForwarder";
     private static final int BUFFER_SIZE = 2048;
@@ -34,7 +32,7 @@ public class HttpForwarder implements Runnable {
     /**
      * Create server for specified port, requests will be forwarded to specified target URL
      */
-    public HttpForwarder(int port, String targetUrl) {
+    HttpForwarder(int port, String targetUrl) {
         mPort = port;
         mTargetUrl = targetUrl.replaceAll("/$", "");
     }
@@ -42,7 +40,7 @@ public class HttpForwarder implements Runnable {
     /**
      * Start the server
      */
-    public void start() {
+    void start() {
         try {
             // Open the server socket
             mServerSocket = new ServerSocket(mPort);
@@ -60,7 +58,7 @@ public class HttpForwarder implements Runnable {
     /**
      * Stop the server
      */
-    public void stop() {
+    void stop() {
         try {
             if(mServerSocket != null) {
                 mServerSocket.close();
@@ -81,6 +79,7 @@ public class HttpForwarder implements Runnable {
             while(true) {
                 // Accept
                 final Socket socket = mServerSocket.accept();
+                if(socket == null) break;
 
                 // Spawn a thread
                 Thread t = new Thread() {
@@ -92,9 +91,8 @@ public class HttpForwarder implements Runnable {
 
                 t.start();
             }
-        } catch(SocketException e) {
-            // Stopped
-        } catch(IOException e) {
+        }
+        catch(IOException e) {
             e.printStackTrace();
         }
     }
@@ -138,7 +136,10 @@ public class HttpForwarder implements Runnable {
                 headers.get(key).add(s.length == 2 ? s[1].trim() : "");
             }
 
+            // We need to forward the request to target with the path
             String targetUrl = mTargetUrl + path;
+
+            // Log the original request, as required
             Log.i(TAG, method + " " + targetUrl);
 
             // Forge the corresponding request
