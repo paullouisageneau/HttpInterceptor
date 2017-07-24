@@ -10,7 +10,7 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static String TARGET_URL = "https://wowza-cloudfront.streamroot.io/liveorigin/stream4/playlist.m3u8";
+    private static final String TARGET_URL = "https://wowza-cloudfront.streamroot.io/liveorigin/stream4/playlist.m3u8";
     private static final String PLAYER = "org.videolan.vlc";
     private static final int PLAYER_REQUEST = 42;
     private static final int LOCAL_PORT = 8888;
