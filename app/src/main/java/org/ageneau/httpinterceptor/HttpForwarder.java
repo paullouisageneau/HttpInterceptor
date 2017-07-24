@@ -86,6 +86,10 @@ class HttpForwarder implements Runnable {
                 final Socket socket = mServerSocket.accept();
                 if(socket == null) break;
 
+                InetSocketAddress localAddr = (InetSocketAddress)socket.getRemoteSocketAddress();
+                if(!localAddr.getAddress().isLoopbackAddress())
+                    continue;
+
                 // Spawn a thread
                 Thread t = new Thread() {
                     @Override
